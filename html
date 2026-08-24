@@ -1,0 +1,249 @@
+<html lang="es"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MesaYa / RestoFlow - Sistema de Gestión de Mesas</title>
+  
+  <!-- Bootstrap CSS (Solo para la cuadrícula y utilidades básicas) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome para los iconos -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  
+  <!-- Tu hoja de estilos personalizada -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- NAVEGACIÓN INFERIOR -->
+  <div class="view-switcher-bar">
+    <button class="btn btn-primary btn-sm rounded-pill px-3" id="btnViewClient" onclick="switchView('client')">Portal del Cliente</button>
+    <button class="btn btn-outline-warning btn-sm rounded-pill px-3" id="btnViewDash" onclick="switchView('dashboard')">Dashboard Recepcionista</button>
+  </div>
+
+  <!-- ==========================================
+       VISTA 1: PORTAL DEL CLIENTE
+       ========================================== -->
+  <div id="clientView" class="view-container active">
+    <nav class="navbar navbar-expand-lg bg-white border-bottom px-4">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-primary" href="#"><i class="fa-solid fa-utensils me-2"></i>MesaYa <small class="fs-6 text-muted fw-normal">RestoFlow Platform</small></a>
+        <div class="d-flex align-items-center gap-3">
+          <select class="form-select form-select-sm rounded-pill bg-light border-0" style="width: auto;"><option>📍 Sede Principal — Miraflores</option></select>
+          <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 32px; height: 32px; font-size: 12px;">JP</div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="bg-white border-bottom py-2 px-4">
+      <div class="container-fluid d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <div class="d-flex align-items-center gap-2">
+          <!-- Calendario -->
+          <input type="date" class="form-control form-control-sm rounded-pill bg-light border-0" id="inputFecha" value="2026-08-24">
+          
+          <!-- Horas -->
+          <div class="btn-group btn-group-sm">
+            <button class="btn btn-hour" onclick="selectHour(this)">1:00 PM</button>
+            <button class="btn btn-hour" onclick="selectHour(this)">2:00 PM</button>
+            <button class="btn btn-hour active" onclick="selectHour(this)">8:00 PM</button>
+            <button class="btn btn-hour" onclick="selectHour(this)">9:00 PM</button>
+          </div>
+          
+          <!-- Personas -->
+          <div class="input-group input-group-sm w-auto align-items-center">
+            <button class="btn btn-outline-secondary" onclick="changePeople(-1)">-</button>
+            <span class="input-group-text bg-white" id="numPersonas">4 Personas</span>
+            <button class="btn btn-outline-secondary" onclick="changePeople(1)">+</button>
+          </div>
+        </div>
+        
+        <!-- Zonas -->
+        <ul class="nav nav-pills nav-fill bg-light p-1 rounded-pill fs-7">
+          <li class="nav-item"><a class="nav-link active rounded-pill py-1 px-3" href="#" onclick="selectZone(event, 'Salón Principal')">Salón Principal</a></li>
+          <li class="nav-item"><a class="nav-link text-secondary py-1 px-3" href="#" onclick="selectZone(event, 'Terraza')">Terraza</a></li>
+          <li class="nav-item"><a class="nav-link text-secondary py-1 px-3" href="#" onclick="selectZone(event, 'Zona VIP')">Zona VIP</a></li>
+          <li class="nav-item"><a class="nav-link text-secondary py-1 px-3" href="#" onclick="selectZone(event, 'Bar')">Bar</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container-fluid p-4">
+      <div class="row g-4">
+        <div class="col-lg-9">
+          <div class="bg-white rounded-4 p-4 shadow-sm">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <div>
+                <h5 class="fw-bold mb-0" id="zonaTitle">Salón Principal</h5>
+                <small class="text-muted" id="zonaSubtitle">Haz clic en una mesa verde para ver la ventana de reserva</small>
+              </div>
+              <div class="d-flex gap-3 fs-7 align-items-center">
+                <span><i class="fa-solid fa-circle text-success me-1"></i>Libre</span>
+                <span><i class="fa-solid fa-circle text-warning me-1"></i>Reservada</span>
+                <span><i class="fa-solid fa-circle text-danger me-1"></i>Ocupada</span>
+              </div>
+            </div>
+            
+            <div class="d-flex flex-wrap gap-4 justify-content-start align-items-center p-3">
+              <div class="table-card free" onclick="openModal('01', 4)"><span class="badge-status"></span><span class="fw-bold fs-5">01</span><small class="fs-8">4 pers.</small></div>
+              <div class="table-card busy"><span class="badge-status"></span><span class="fw-bold fs-5">02</span><small class="fs-8">4 pers.</small><span class="badge bg-danger-subtle text-danger fs-9 mt-1">45 min</span></div>
+              <div class="table-card reserved" onclick="openModal('03', 6)"><span class="badge-status"></span><span class="fw-bold fs-5">03</span><small class="fs-8">6 pers.</small><span class="badge bg-warning-subtle text-warning fs-9 mt-1">8:00 PM</span></div>
+              <div class="table-card free" onclick="openModal('04', 4)"><span class="badge-status"></span><span class="fw-bold fs-5">04</span><small class="fs-8">4 pers.</small></div>
+              <div class="table-card free circle" onclick="openModal('07', 6)"><span class="badge-status"></span><span class="fw-bold fs-5">07</span><small class="fs-8">6 pers.</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3">
+          <div class="bg-white rounded-4 p-4 shadow-sm">
+            <div class="text-center py-4 border-bottom">
+              <i class="fa-solid fa-map-location-dot fs-1 text-primary mb-2"></i>
+              <h6 class="fw-bold mb-1">Selecciona una mesa</h6>
+              <p class="text-muted fs-7 mb-0">Haz clic en una mesa verde o en el botón de abajo.</p>
+            </div>
+            <!-- Botón de respaldo para abrir el modal -->
+            <div class="mt-4 text-center">
+                <button class="btn btn-reserve-side w-100 rounded-pill py-2" onclick="openModal('01', 4)">
+                    <i class="fa-solid fa-calendar-check me-2"></i> Reservar Mesa 01
+                </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       VISTA 2: DASHBOARD DEL RECEPCIONISTA
+       ========================================== -->
+  <div id="dashView" class="view-container">
+    <nav class="navbar navbar-dark bg-dark px-4 border-bottom border-secondary">
+      <div class="container-fluid">
+        <a class="navbar-brand fw-bold text-warning" href="#"><i class="fa-solid fa-utensils me-2"></i>RestoFlow <small class="fs-6 text-light fw-normal">Panel de Control</small></a>
+        <div class="d-flex align-items-center gap-3">
+          <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill">● EN VIVO — Conectado</span>
+          <div class="text-end text-light">
+            <span class="d-block fw-bold fs-7">Laura González</span>
+            <small class="text-muted fs-8">Recepcionista · Turno Noche</small>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid p-4">
+      <!-- KPIs -->
+      <div class="row g-3 mb-4">
+        <div class="col-md-3">
+          <div class="dash-card p-3 d-flex justify-content-between align-items-center">
+            <div><small class="dash-text-muted d-block">Total Mesas</small><span class="fs-2 fw-bold">22</span></div>
+            <i class="fa-solid fa-table-cells fs-1 text-secondary"></i>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="dash-card p-3 d-flex justify-content-between align-items-center border-start border-4 border-success">
+            <div><small class="dash-text-muted d-block">Mesas Libres</small><span class="fs-2 fw-bold text-success">10</span></div>
+            <span class="badge bg-success">Disponibles</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="dash-card p-3 d-flex justify-content-between align-items-center border-start border-4 border-danger">
+            <div><small class="dash-text-muted d-block">Mesas Ocupadas</small><span class="fs-2 fw-bold text-danger">6</span></div>
+            <span class="badge bg-danger">En uso</span>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="dash-card p-3 d-flex justify-content-between align-items-center border-start border-4 border-warning">
+            <div><small class="dash-text-muted d-block">Reservas Próximas (1h)</small><span class="fs-2 fw-bold text-warning">5</span></div>
+            <span class="badge bg-warning text-dark">Próximas</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mapa y Cola -->
+      <div class="row g-4">
+        <div class="col-lg-8">
+          <div class="dash-table-canvas">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+              <h5 class="fw-bold mb-0">Salón Principal — Mapa en Tiempo Real</h5>
+              <button class="btn btn-warning btn-sm rounded-pill fw-bold">🎬 ESCENARIO</button>
+            </div>
+            <p class="text-muted fs-7 mb-4">Haz clic en una mesa para ver las acciones disponibles</p>
+            <div class="d-flex flex-wrap gap-4">
+              <div class="table-card free"><span class="badge-status"></span><span class="fw-bold fs-5">01</span><small class="fs-8">4 pers.</small></div>
+              <div class="table-card busy"><span class="badge-status"></span><span class="fw-bold fs-5">02</span><small class="fs-8">4 pers.</small><span class="badge bg-danger-subtle text-danger fs-9 mt-1">45 min</span></div>
+              <div class="table-card reserved"><span class="badge-status"></span><span class="fw-bold fs-5">03</span><small class="fs-8">6 pers.</small><span class="badge bg-warning-subtle text-warning fs-9 mt-1">8:00 PM</span></div>
+              <div class="table-card free"><span class="badge-status"></span><span class="fw-bold fs-5">04</span><small class="fs-8">4 pers.</small></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-4">
+          <div class="dash-card p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h6 class="fw-bold mb-0">Cola de Reservas</h6>
+              <span class="badge bg-warning text-dark">5 pendientes</span>
+            </div>
+            <button class="btn btn-success btn-sm w-100 mb-3 fw-bold">+ Registrar Cliente Presencial (Walk-in)</button>
+            <div class="d-flex flex-column gap-2">
+              <div class="p-2 rounded bg-dark border border-secondary d-flex justify-content-between align-items-center">
+                <div><span class="d-block fw-bold fs-7">María García</span><small class="text-muted fs-8">Mesa 03 · 4 personas</small></div>
+                <button class="btn btn-outline-primary btn-sm fs-8">Check-in</button>
+              </div>
+              <div class="p-2 rounded bg-dark border border-secondary d-flex justify-content-between align-items-center">
+                <div><span class="d-block fw-bold fs-7">Roberto Silva</span><small class="text-muted fs-8">Mesa 14 · 6 personas</small></div>
+                <button class="btn btn-outline-primary btn-sm fs-8">Check-in</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================
+       MODAL DE CONFIRMACIÓN (Imagen 3)
+       ========================================== -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box-custom">
+        <div class="modal-header-custom">
+          <div>
+            <small class="text-uppercase" style="font-size: 0.75rem; color: #a5b4fc; font-weight: bold; display: block; margin-bottom: 5px;">Confirmar Reserva</small>
+            <h5 class="modal-title" id="modalTableTitle">Mesa #01 — Salón Principal</h5>
+          </div>
+          <button type="button" class="btn-close-white" onclick="closeModal()">×</button>
+        </div>
+        
+        <div class="modal-body-custom">
+          <div class="resume-box">
+            <div class="resume-item"><i class="fa-solid fa-calendar-days"></i><div><strong>Fecha</strong><span id="modalFecha">Hoy, 24 de Octubre</span></div></div>
+            <div class="resume-item"><i class="fa-regular fa-clock"></i><div><strong>Hora</strong><span id="modalHora">8:00 PM</span></div></div>
+            <div class="resume-item"><i class="fa-solid fa-user-group"></i><div><strong>Personas</strong><span id="modalPersonas">4 comensales</span></div></div>
+            <div class="resume-item"><i class="fa-solid fa-location-dot"></i><div><strong>Mesa</strong><span id="modalTableNum">#01 · Cap. 4 pers.</span></div></div>
+          </div>
+
+          <form id="formReserva" onsubmit="confirmBooking(event)">
+            <div class="form-group">
+              <label class="form-label">Nombres y Apellidos</label>
+              <div class="input-group"><input type="text" class="form-control valid-border" value="Juan Pérez" required=""><span class="input-group-text check">✓</span></div>
+            </div>
+            <div class="row-2">
+              <div class="form-group">
+                <label class="form-label">Teléfono de Contacto</label>
+                <input type="text" class="form-control" value="+51 987654321" required="">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Correo Electrónico</label>
+                <div class="input-group"><input type="email" class="form-control valid-border" value="juan@email.com" required=""><span class="input-group-text check">✓</span></div>
+              </div>
+            </div>
+            <p class="note-text">ℹ Cancelación gratuita hasta 2 horas antes de la reserva.</p>
+            <div class="modal-actions">
+              <button type="button" class="btn-cancel" onclick="closeModal()">Cancelar / Volver</button>
+              <button type="submit" class="btn-confirm">Confirmar Reserva →</button>
+            </div>
+          </form>
+        </div>
+    </div>
+  </div>
+
+  <!-- Tu archivo de lógica -->
+  <script src="script.js"></script>
+
+</body></html>
